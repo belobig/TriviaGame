@@ -1,0 +1,56 @@
+@font-face {
+	font-family: ReturnOfGanon;
+	src: url("fonts/returnofganon.ttf") format('truetype');
+}
+
+@font-face {
+	font-family: ZeldaDX;
+	src: url("fonts/zeldadxttbrk.ttf") format('truetype');
+}
+
+body {
+	font-family: ReturnOfGanon, 'VT323', monospace;
+	color: lawngreen;
+	background: url(../images/videogame-bg.png) no-repeat center fixed;
+	background-size: cover;
+}
+
+h1 {
+	font-size: 4em;
+}
+
+h2 {
+	font-size: 3em;
+}
+
+#hearts {
+	color: red;
+}
+
+h1, h2 {
+	font-family: ZeldaDX, 'VT323', monospace;
+}
+
+.whtRndBrdr {
+	border: 2px solid white;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+/* to create a blur effect on the background */
+.blur {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	background: rgba(0, 0, 0, 0.75);
+	/* Fallback to SVG filters */
+	filter: url('#blur');
+	/* Webkit support */
+	-webkit-filter: blur(10px);
+	filter: blur(10px);
+	z-index: -1;
+}
+
