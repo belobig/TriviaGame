@@ -60,6 +60,10 @@ h1, h2 {
 	font-size: 24px;
 }
 
+.guessImg {
+	width: 300px;
+}
+
 /* Adding my own button style */
 .btn-kelly {
   color: lawngreen;

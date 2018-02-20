@@ -13,7 +13,8 @@ $(document).ready(function () {
 		a1: "Pong",
 		a2: "Tennis for Two",
 		a3: "Zork",
-		a4: "Computer Space"
+		a4: "Computer Space",
+		image: '<img class="guessImg" src="assets/images/computer-space.jpg" alt="Computer Space game">'
 	};
 	// Adding question to questions array
 	questions[questions.length] = q0;
@@ -24,25 +25,11 @@ $(document).ready(function () {
 		a1: "Ganon",
 		a2: "Wario",
 		a3: "Kamek",
-		a4: "Bowser"
+		a4: "Bowser",
+		image: '<img class="guessImg" src="assets/images/bowser-small.png" alt="Bowser">'
 	};
 	// Adding question to questions array
 	questions[questions.length] = q1;
-
-
-	// How to randomly select a question from the array of questions -- May eventually try to use the Knuth Shuffle to get a random question, too.
-	// First get the indictator of the random question
-	var randQuestionInd = questions[Math.floor(Math.random() * questions.length)];
-	// Then select the question property of that question object
-	var randQuestion = randQuestionInd.question;
-	var heartsArea = '<div class="col-xs-12 blur"></div><div class="col-xs-10"></div><div class="col-xs-2"><h3 id="hearts"></h3></div>';
-	var questionArea = '<h2 id="questionArea">Question: </h2><br><h3 id="randQuestion">' + randQuestion + '</h3>';
-	var fullHearts = 0;
-	var emptyHearts = 0;
-	var answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
-	var answerArea = '<ul id="answerArea"></ul>';
-	var correctAnswer = randQuestionInd.a4;
-	var resetButton = "<button class='btn btn-kelly btn-lg' id='resetBtn'>Try again?</button>";
 
 	// The Fisher-Yates (aka Knuth) Shuffle algorithm - found here: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	// and here: https://bost.ocks.org/mike/shuffle/
@@ -66,8 +53,30 @@ $(document).ready(function () {
 		return array;
 	}
 
+
+
+	// How to randomly select a question from the array of questions using the Knuth shuffle
+	// First shuffle the questions array
+	var shuffledQuestions = shuffle(questions);
+	// then get the indicator of the selected question
+	var randQuestionInd = shuffledQuestions[0];
+	// Then select the question property of that question object
+	var randQuestion = randQuestionInd.question;
+	var answerImage = randQuestionInd.image;
+	var heartsArea = '<div class="col-xs-12 blur"></div><div class="col-xs-10"></div><div class="col-xs-2"><h3 id="hearts"></h3></div>';
+	var questionArea = '<h2 id="questionArea">Question: </h2><br><h3 id="randQuestion">' + randQuestion + '</h3>';
+	var fullHearts = 0;
+	var emptyHearts = 0;
+	var answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
+	var answerArea = '<ul id="answerArea"></ul>';
+	var correctAnswer = randQuestionInd.a4;
+	var resetButton = "<button class='btn btn-kelly btn-lg' id='resetBtn'>Try again?</button>";
+
 	// Using the Knuth shuffle to randomize the answers
 	var randAnswers = shuffle(answers);
+
+
+
 
 	// A function to add answer buttons to the page
 	function addAnswerBtns() {
@@ -90,14 +99,26 @@ $(document).ready(function () {
 
 	function correctGuess() {
 		console.log("Correct!");
+		$("#answerArea").html("<h2>Correct!</h2>" + answerImage);
+		$("#questionArea").hide();
+		$("#randQuestion").hide();
 		countHearts();
+		setTimeout(function () {
+			nextQuestion();
+		}, 5000);
 	}
 
 	function incorrectGuess() {
 		console.log("You suck.");
+		$("#answerArea").html("<h3>" + correctAnswer + "</h3>" + answerImage);
+		$("#questionArea").html("Wrong.");
+		$("#randQuestion").html("The correct answer was:");
 		fullHearts--;
 		emptyHearts++;
 		countHearts();
+		setTimeout(function () {
+			nextQuestion();
+		}, 5000);
 	}
 
 	function loser() {
@@ -109,6 +130,27 @@ $(document).ready(function () {
 		$("#resetBtn").click(reset);
 	}
 
+	function nextQuestion() {
+		for (let m = 1; m < shuffledQuestions.length; m++) {
+			randQuestionInd = shuffledQuestions[m];
+		}
+		randQuestion = randQuestionInd.question;
+		answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
+		correctAnswer = randQuestionInd.a4;
+		randAnswers = shuffle(answers);
+		answerImage = randQuestionInd.image;
+		console.log(randQuestionInd);
+		$("#questionArea").show();
+		$("#questionArea").html("Question:");
+		$("#randQuestion").show();
+		$("#randQuestion").html(randQuestion);
+		$("#answerArea").html('');
+		for (let n = 0; n < randAnswers.length; n++) {
+			$("#answerArea").append('<button class="btn btn-kelly answerBtn"><li>' + randAnswers[n] + '</li></button>');
+			console.log(randAnswers[n]);
+		}
+		console.log("The correct answer is: " + correctAnswer);
+	}
 
 	// Function to count hearts and add them to the page
 	function countHearts() {
@@ -128,7 +170,7 @@ $(document).ready(function () {
 
 	// What happens when the start button is clicked:
 	function startBtn() {
-		// console.log("Start button clicked!");
+		// console.log(shuffledQuestions);
 		$("#startArea").html(heartsArea);
 		$("#startArea").append(questionArea);
 		countHearts();
