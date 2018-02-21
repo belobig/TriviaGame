@@ -31,6 +31,18 @@ $(document).ready(function () {
 	// Adding question to questions array
 	questions[questions.length] = q1;
 
+	// 2nd Question Object
+	var q2 = {
+		question: "In the original The Legend of Zelda, who was the main boss?",
+		a1: "Ganondorf",
+		a2: "Bowser",
+		a3: "Majora",
+		a4: "Ganon",
+		image: '<img class="guessImg" src="assets/images/ganon.png" alt="Ganon">'
+	};
+	// Adding question to questions array
+	questions[questions.length] = q2;
+
 	// The Fisher-Yates (aka Knuth) Shuffle algorithm - found here: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	// and here: https://bost.ocks.org/mike/shuffle/
 	// and here: http://sedition.com/perl/javascript-fy.html
@@ -231,7 +243,7 @@ $(document).ready(function () {
 	}
 
 	function nextQuestion() {
-		for (let m = 1; m < shuffledQuestions.length; m++) {
+		for (let m = 0; m < shuffledQuestions.length; m++) {
 			randQuestionInd = shuffledQuestions[m];
 		}
 		randQuestion = randQuestionInd.question;
@@ -286,7 +298,7 @@ $(document).ready(function () {
 	}
 
 
-	reset();
+	
 
 	// What happens when the game is reset
 	function reset() {
@@ -302,15 +314,19 @@ $(document).ready(function () {
 		wrongs = 0;
 		unanswered = 0;
 
+		// Trying to figure out the right way to reinitialize these variables so I can get different questions each time.
 		randQuestionInd = shuffledQuestions[0];
 		answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
 		correctAnswer = randQuestionInd.a4;
 		randAnswers = shuffle(answers);
 		answerImage = randQuestionInd.image;
+
+		// So I can see if randomization of questions is working
 		console.log(questions);
 		console.log(shuffledQuestions);
 		console.log(randQuestionInd);
-		// Setting all these variables to null just breaks things, but otherwise, on the retry, the answers don't always match the question.
+
+		// Setting all these variables to null just breaks things.
 		// randQuestion = null;
 		// answers = null;
 		// correctAnswer = null;
@@ -320,6 +336,9 @@ $(document).ready(function () {
 		$("#questionArea").show();
 		$("#randQuestion").show();
 	}
+
+
+	reset();
 
 
 });
