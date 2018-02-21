@@ -126,7 +126,7 @@ $(document).ready(function () {
 		unanswered++;
 		countHearts();
 		nextQTimer = setTimeout(function () {
-			console.log("5s timeout from TimeUp");
+			// console.log("5s timeout from TimeUp");
 			nextQuestion();
 		}, 5000);
 	}
@@ -162,12 +162,12 @@ $(document).ready(function () {
 		countHearts();
 		if (questionsAsked === questions.length) {
 			nextQTimer = setTimeout(function () {
-				console.log("5s timeout from correctGuess");
+				// console.log("5s timeout from correctGuess");
 				winner();
 			}, 5000);
 		} else {
 			nextQTimer = setTimeout(function () {
-				console.log("5s timeout from correctGuess");
+				// console.log("5s timeout from correctGuess");
 				nextQuestion();
 			}, 5000);
 		}
@@ -185,12 +185,12 @@ $(document).ready(function () {
 		countHearts();
 		if (emptyHearts >= 3) {
 			nextQTimer = setTimeout(function () {
-				console.log("5s timeout from incorrectGuess");
+				// console.log("5s timeout from incorrectGuess");
 				loser();
 			}, 5000);
 		} else {
 			nextQTimer = setTimeout(function () {
-				console.log("5s timeout from incorrectGuess");
+				// console.log("5s timeout from incorrectGuess");
 				nextQuestion();
 			}, 5000);
 		}
@@ -302,7 +302,14 @@ $(document).ready(function () {
 		wrongs = 0;
 		unanswered = 0;
 
-
+		randQuestionInd = shuffledQuestions[0];
+		answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
+		correctAnswer = randQuestionInd.a4;
+		randAnswers = shuffle(answers);
+		answerImage = randQuestionInd.image;
+		console.log(questions);
+		console.log(shuffledQuestions);
+		console.log(randQuestionInd);
 		// Setting all these variables to null just breaks things, but otherwise, on the retry, the answers don't always match the question.
 		// randQuestion = null;
 		// answers = null;
