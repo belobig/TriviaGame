@@ -53,7 +53,20 @@ $(document).ready(function () {
 		return array;
 	}
 
+	//variables for end game tally
+	var questionsAsked = 0;
+	var rights = 0;
+	var wrongs = 0;
+	var unanswered = 0;
+	var qAskedLabel;
+	var rightsLabel;
+	var wrongsLabel;
+	var unansLabel;
 
+	//variables for timers
+	var timer = 31;
+	var intervalId;
+	var nextQTimer;
 
 	// How to randomly select a question from the array of questions using the Knuth shuffle
 	// First shuffle the questions array
@@ -63,7 +76,7 @@ $(document).ready(function () {
 	// Then select the question property of that question object
 	var randQuestion = randQuestionInd.question;
 	var answerImage = randQuestionInd.image;
-	var heartsArea = '<div class="col-xs-12 blur"></div><div class="col-xs-10"></div><div class="col-xs-2"><h3 id="hearts"></h3></div>';
+	var heartsArea = '<div class="col-xs-12 blur"></div><div class="col-xs-10"><h3 id="timerArea"></h3></div><div class="col-xs-2"><h3 id="hearts"></h3></div>';
 	var questionArea = '<h2 id="questionArea">Question: </h2><br><h3 id="randQuestion">' + randQuestion + '</h3>';
 	var fullHearts = 0;
 	var emptyHearts = 0;
@@ -75,21 +88,63 @@ $(document).ready(function () {
 	// Using the Knuth shuffle to randomize the answers
 	var randAnswers = shuffle(answers);
 
+	// Main timer functions
+	function run() {
+		clearInterval(intervalId);
+		intervalId = setInterval(decrement, 1000);
+	}
 
+	function decrement() {
+
+		timer--;
+
+		$("#timerArea").html("Time: " + timer);
+
+		if (timer === 0) {
+
+			stop();
+			timer = 31;
+
+			console.log("Time Up!");
+			timeUp();
+		}
+	}
+
+	function stop() {
+
+		clearInterval(intervalId);
+	}
+
+
+
+	function timeUp() {
+		$("#answerArea").html("<h3>" + correctAnswer + "</h3>" + answerImage);
+		$("#questionArea").html("Time UP!");
+		$("#randQuestion").html("The correct answer was:");
+		fullHearts--;
+		emptyHearts++;
+		unanswered++;
+		countHearts();
+		nextQTimer = setTimeout(function () {
+			console.log("5s timeout from TimeUp");
+			nextQuestion();
+		}, 5000);
+	}
 
 
 	// A function to add answer buttons to the page
 	function addAnswerBtns() {
 		for (let k = 0; k < randAnswers.length; k++) {
 			$("#answerArea").append('<button class="btn btn-kelly answerBtn"><li>' + randAnswers[k] + '</li></button>');
-			console.log(randAnswers[k]);
+			// console.log(randAnswers[k]);
 		}
 	}
 
 	// Function to determine what happens when an answer button is clicked
 	function guess() {
 		var guessClick = $(this).text();
-		console.log(guessClick + " was clicked");
+		// console.log(guessClick + " was clicked");
+
 		if (guessClick === correctAnswer) {
 			correctGuess();
 		} else {
@@ -98,32 +153,77 @@ $(document).ready(function () {
 	}
 
 	function correctGuess() {
-		console.log("Correct!");
+		// console.log("Correct!");
+		stop();
 		$("#answerArea").html("<h2>Correct!</h2>" + answerImage);
 		$("#questionArea").hide();
 		$("#randQuestion").hide();
+		rights++;
 		countHearts();
-		setTimeout(function () {
-			nextQuestion();
-		}, 5000);
+		if (questionsAsked === questions.length) {
+			nextQTimer = setTimeout(function () {
+				console.log("5s timeout from correctGuess");
+				winner();
+			}, 5000);
+		} else {
+			nextQTimer = setTimeout(function () {
+				console.log("5s timeout from correctGuess");
+				nextQuestion();
+			}, 5000);
+		}
 	}
 
 	function incorrectGuess() {
-		console.log("You suck.");
+		// console.log("You suck.");
+		stop();
 		$("#answerArea").html("<h3>" + correctAnswer + "</h3>" + answerImage);
 		$("#questionArea").html("Wrong.");
 		$("#randQuestion").html("The correct answer was:");
 		fullHearts--;
 		emptyHearts++;
+		wrongs++;
 		countHearts();
-		setTimeout(function () {
-			nextQuestion();
-		}, 5000);
+		if (emptyHearts >= 3) {
+			nextQTimer = setTimeout(function () {
+				console.log("5s timeout from incorrectGuess");
+				loser();
+			}, 5000);
+		} else {
+			nextQTimer = setTimeout(function () {
+				console.log("5s timeout from incorrectGuess");
+				nextQuestion();
+			}, 5000);
+		}
 	}
 
 	function loser() {
-		console.log("You LOSE!!!!")
-		$("#answerArea").html("<h2>GAME OVER</h2>" + resetButton);
+		console.log("You LOSE!!!!");
+		clearTimeout(nextQTimer);
+		nextQTimer = null;
+		stop();
+		qAskedLabel = "<h3>Questions Asked: " + questionsAsked + "</h3>";
+		rightsLabel = "<h3>Correct Answers: " + rights + "</h3>";
+		wrongsLabel = "<h3>Wrong Answers: " + wrongs + "</h3>";
+		unansLabel = "<h3>Unanswered: " + unanswered + "</h3>";
+
+		$("#answerArea").html("<h2>GAME OVER</h2>" + qAskedLabel + rightsLabel + wrongsLabel + unansLabel + resetButton);
+		$("#questionArea").hide();
+		$("#randQuestion").hide();
+		$("#startArea").off("click", ".answerBtn");
+		$("#resetBtn").click(reset);
+	}
+
+	function winner() {
+		console.log("You WIN!!!!");
+		clearTimeout(nextQTimer);
+		nextQTimer = null;
+		stop();
+		qAskedLabel = "<h3>Questions Asked: " + questionsAsked + "</h3>";
+		rightsLabel = "<h3>Correct Answers: " + rights + "</h3>";
+		wrongsLabel = "<h3>Wrong Answers: " + wrongs + "</h3>";
+		unansLabel = "<h3>Unanswered: " + unanswered + "</h3>";
+
+		$("#answerArea").html("<h2>YOU WIN!</h2>" + qAskedLabel + rightsLabel + wrongsLabel + unansLabel + resetButton);
 		$("#questionArea").hide();
 		$("#randQuestion").hide();
 		$("#startArea").off("click", ".answerBtn");
@@ -139,17 +239,21 @@ $(document).ready(function () {
 		correctAnswer = randQuestionInd.a4;
 		randAnswers = shuffle(answers);
 		answerImage = randQuestionInd.image;
-		console.log(randQuestionInd);
+		// console.log(randQuestionInd);
 		$("#questionArea").show();
 		$("#questionArea").html("Question:");
 		$("#randQuestion").show();
 		$("#randQuestion").html(randQuestion);
 		$("#answerArea").html('');
-		for (let n = 0; n < randAnswers.length; n++) {
-			$("#answerArea").append('<button class="btn btn-kelly answerBtn"><li>' + randAnswers[n] + '</li></button>');
-			console.log(randAnswers[n]);
-		}
+		// for (let n = 0; n < randAnswers.length; n++) {
+		// 	$("#answerArea").append('<button class="btn btn-kelly answerBtn"><li>' + randAnswers[n] + '</li></button>');
+		// 	console.log(randAnswers[n]);
+		// }
+		addAnswerBtns();
 		console.log("The correct answer is: " + correctAnswer);
+		timer = 31;
+		questionsAsked++;
+		run();
 	}
 
 	// Function to count hearts and add them to the page
@@ -161,9 +265,7 @@ $(document).ready(function () {
 		for (let j = 0; j < emptyHearts; j++) {
 			$("#hearts").append('*');
 		}
-		if (emptyHearts >= 3) {
-			loser();
-		}
+
 	}
 
 
@@ -179,6 +281,8 @@ $(document).ready(function () {
 		addAnswerBtns();
 		console.log("The correct answer is: " + correctAnswer);
 		$("#startArea").on("click", ".answerBtn", guess);
+		questionsAsked++;
+		run();
 	}
 
 
@@ -191,6 +295,20 @@ $(document).ready(function () {
 		$("#startBtn").click(startBtn);
 		fullHearts = 3;
 		emptyHearts = 0;
+
+		timer = 31;
+		questionsAsked = 0;
+		rights = 0;
+		wrongs = 0;
+		unanswered = 0;
+
+
+		// Setting all these variables to null just breaks things, but otherwise, on the retry, the answers don't always match the question.
+		// randQuestion = null;
+		// answers = null;
+		// correctAnswer = null;
+		// randAnswers = null;
+		// answerImage = null;
 
 		$("#questionArea").show();
 		$("#randQuestion").show();
