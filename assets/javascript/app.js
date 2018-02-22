@@ -1,4 +1,6 @@
 $(document).ready(function () {
+	console.log("-----------------Page Load------------------");
+
 
 	// Initial variable values
 	var startButton = "<button class='btn btn-kelly btn-lg btn-block' id='startBtn'>Start</button>";
@@ -102,7 +104,7 @@ $(document).ready(function () {
 	var answerImage = randQuestionInd.image;
 	var heartsArea = '<div class="col-xs-12 blur"></div><div class="col-xs-10"><h3 id="timerArea"></h3></div><div class="col-xs-2"><h3 id="hearts"></h3></div>';
 	var questionArea = '<h2 id="questionArea">Question: </h2><br><h3 id="randQuestion">' + randQuestion + '</h3>';
-	var fullHearts = 0;
+	var fullHearts = 3;
 	var emptyHearts = 0;
 	var answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
 	var answerArea = '<ul id="answerArea"></ul>';
@@ -277,8 +279,9 @@ $(document).ready(function () {
 		$("#answerArea").html('');
 		addAnswerBtns();
 		console.log(questions);
-		console.log(shuffledQuestions);
 		console.log(randQuestionInd);
+		console.log(randQuestion);
+		console.log("Questions asked: " + questionsAsked);
 		console.log("The correct answer is: " + correctAnswer);
 		timer = 31;
 		questionsAsked++;
@@ -315,13 +318,13 @@ $(document).ready(function () {
 	}
 
 
-
+	$("#startArea").html(startArea);
+	$("#actionArea").html(startButton);
+	$("#startBtn").click(startBtn);
 
 	// What happens when the game is reset
 	function reset() {
-		$("#startArea").html(startArea);
-		$("#actionArea").html(startButton);
-		$("#startBtn").click(startBtn);
+		
 		fullHearts = 3;
 		emptyHearts = 0;
 
@@ -331,17 +334,26 @@ $(document).ready(function () {
 		wrongs = 0;
 		unanswered = 0;
 
-		// Trying to figure out the right way to reinitialize these variables so I can get different questions each time.
+		// Trying to figure out the right way to reinitialize these variables so I can get different questions each time, as well as the right question to match the answers.
+		shuffledQuestions = shuffle(questions);
 		randQuestionInd = shuffledQuestions[questionsAsked];
+		randQuestion = randQuestionInd.question;
 		answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
 		correctAnswer = randQuestionInd.a4;
 		randAnswers = shuffle(answers);
 		answerImage = randQuestionInd.image;
+		questionArea = '<h2 id="questionArea">Question: </h2><br><h3 id="randQuestion">' + randQuestion + '</h3>';
+
+		$("#startArea").html(startArea);
+		$("#actionArea").html(startButton);
+		$("#startBtn").click(startBtn);
 
 		// So I can see if randomization of questions is working
+		console.log("~*~*~*~*~*~*~*~*~*~*Reset Load~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
 		console.log(questions);
-		console.log(shuffledQuestions);
 		console.log(randQuestionInd);
+		console.log(randQuestion);
+		// console.log("Questions asked: " + questionsAsked);
 
 		// Setting all these variables to null just breaks things.
 		// randQuestion = null;
@@ -355,7 +367,7 @@ $(document).ready(function () {
 	}
 
 
-	reset();
+	// reset();
 
 
 });
