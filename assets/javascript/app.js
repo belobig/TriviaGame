@@ -57,6 +57,18 @@ $(document).ready(function () {
 	// Adding question to questions array
 	questions[questions.length] = q3;
 
+	// 4th Question Object
+	var q4 = {
+		question: "Who hails from the planet K-2L and wears a Power Suit?",
+		a1: "Adam Malkovich",
+		a2: "Metroid",
+		a3: "Chozo",
+		a4: "Samus Aran",
+		image: '<img class="guessImg" src="assets/images/samus.jpg" alt="Samus Aran">'
+	};
+	// Adding question to questions array
+	questions[questions.length] = q4;
+
 	// The Fisher-Yates (aka Knuth) Shuffle algorithm - found here: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	// and here: https://bost.ocks.org/mike/shuffle/
 	// and here: http://sedition.com/perl/javascript-fy.html
