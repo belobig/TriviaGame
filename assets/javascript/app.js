@@ -43,6 +43,18 @@ $(document).ready(function () {
 	// Adding question to questions array
 	questions[questions.length] = q2;
 
+	// 3rd Question Object
+	var q3 = {
+		question: "In Mario Kart, what color is the shell that goes straight for the leader?",
+		a1: "Red",
+		a2: "Green",
+		a3: "Yellow",
+		a4: "Blue",
+		image: '<img class="guessImg" src="assets/images/blueshell.png" alt="Mario Kart Blue Shell">'
+	};
+	// Adding question to questions array
+	questions[questions.length] = q3;
+
 	// The Fisher-Yates (aka Knuth) Shuffle algorithm - found here: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	// and here: https://bost.ocks.org/mike/shuffle/
 	// and here: http://sedition.com/perl/javascript-fy.html
@@ -84,7 +96,7 @@ $(document).ready(function () {
 	// First shuffle the questions array
 	var shuffledQuestions = shuffle(questions);
 	// then get the indicator of the selected question
-	var randQuestionInd = shuffledQuestions[0];
+	var randQuestionInd = shuffledQuestions[questionsAsked];
 	// Then select the question property of that question object
 	var randQuestion = randQuestionInd.question;
 	var answerImage = randQuestionInd.image;
@@ -137,10 +149,19 @@ $(document).ready(function () {
 		emptyHearts++;
 		unanswered++;
 		countHearts();
-		nextQTimer = setTimeout(function () {
-			// console.log("5s timeout from TimeUp");
-			nextQuestion();
-		}, 5000);
+		if (questionsAsked === questions.length && emptyHearts < 3) {
+			nextQTimer = setTimeout(function () {
+				winner();
+			}, 5000);
+		} else if (emptyHearts >= 3) {
+			nextQTimer = setTimeout(function () {
+				loser();
+			}, 5000);
+		} else {
+			nextQTimer = setTimeout(function () {
+				nextQuestion();
+			}, 5000);
+		}
 	}
 
 
@@ -174,12 +195,10 @@ $(document).ready(function () {
 		countHearts();
 		if (questionsAsked === questions.length) {
 			nextQTimer = setTimeout(function () {
-				// console.log("5s timeout from correctGuess");
 				winner();
 			}, 5000);
 		} else {
 			nextQTimer = setTimeout(function () {
-				// console.log("5s timeout from correctGuess");
 				nextQuestion();
 			}, 5000);
 		}
@@ -197,12 +216,14 @@ $(document).ready(function () {
 		countHearts();
 		if (emptyHearts >= 3) {
 			nextQTimer = setTimeout(function () {
-				// console.log("5s timeout from incorrectGuess");
 				loser();
+			}, 5000);
+		} else if (questionsAsked === questions.length) {
+			nextQTimer = setTimeout(function () {
+				winner();
 			}, 5000);
 		} else {
 			nextQTimer = setTimeout(function () {
-				// console.log("5s timeout from incorrectGuess");
 				nextQuestion();
 			}, 5000);
 		}
@@ -243,25 +264,21 @@ $(document).ready(function () {
 	}
 
 	function nextQuestion() {
-		for (let m = 0; m < shuffledQuestions.length; m++) {
-			randQuestionInd = shuffledQuestions[m];
-		}
+		randQuestionInd = shuffledQuestions[questionsAsked];
 		randQuestion = randQuestionInd.question;
 		answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
 		correctAnswer = randQuestionInd.a4;
 		randAnswers = shuffle(answers);
 		answerImage = randQuestionInd.image;
-		// console.log(randQuestionInd);
 		$("#questionArea").show();
 		$("#questionArea").html("Question:");
 		$("#randQuestion").show();
 		$("#randQuestion").html(randQuestion);
 		$("#answerArea").html('');
-		// for (let n = 0; n < randAnswers.length; n++) {
-		// 	$("#answerArea").append('<button class="btn btn-kelly answerBtn"><li>' + randAnswers[n] + '</li></button>');
-		// 	console.log(randAnswers[n]);
-		// }
 		addAnswerBtns();
+		console.log(questions);
+		console.log(shuffledQuestions);
+		console.log(randQuestionInd);
 		console.log("The correct answer is: " + correctAnswer);
 		timer = 31;
 		questionsAsked++;
@@ -298,7 +315,7 @@ $(document).ready(function () {
 	}
 
 
-	
+
 
 	// What happens when the game is reset
 	function reset() {
@@ -315,7 +332,7 @@ $(document).ready(function () {
 		unanswered = 0;
 
 		// Trying to figure out the right way to reinitialize these variables so I can get different questions each time.
-		randQuestionInd = shuffledQuestions[0];
+		randQuestionInd = shuffledQuestions[questionsAsked];
 		answers = [randQuestionInd.a1, randQuestionInd.a2, randQuestionInd.a3, randQuestionInd.a4];
 		correctAnswer = randQuestionInd.a4;
 		randAnswers = shuffle(answers);
