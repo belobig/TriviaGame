@@ -69,6 +69,42 @@ $(document).ready(function () {
 	// Adding question to questions array
 	questions[questions.length] = q4;
 
+	// 5th Question Object
+	var q5 = {
+		question: "In the Tekken series, who is the old dude with grey hair that looks like wings?",
+		a1: "Jin Kazama",
+		a2: "Yoshimitsu",
+		a3: "Claudio Serafino",
+		a4: "Heihachi Mishima",
+		image: '<img class="guessImg" src="assets/images/Heihachi-Mishima.png" alt="Heihachi Mishima">'
+	};
+	// Adding question to questions array
+	questions[questions.length] = q5;
+
+	// 6th Question Object
+	var q6 = {
+		question: "Beginning in Tekken 3, who is the main fighter specializing in Capoeira?",
+		a1: "Katarina Alves",
+		a2: "Tiger Jackson",
+		a3: "Christie Monteiro",
+		a4: "Eddy Gordo",
+		image: '<img class="guessImg" src="assets/images/eddy-gordo.jpg" alt="Eddy Gordo">'
+	};
+	// Adding question to questions array
+	questions[questions.length] = q6;
+
+	// 7th Question Object
+	var q7 = {
+		question: "What is the name of Princess Zelda's secret identity in Ocarina of Time?",
+		a1: "Navi",
+		a2: "Link",
+		a3: "Impa",
+		a4: "Sheik",
+		image: '<img class="guessImg" src="assets/images/sheik.jpg" alt="Sheik">'
+	};
+	// Adding question to questions array
+	questions[questions.length] = q7;
+
 	// The Fisher-Yates (aka Knuth) Shuffle algorithm - found here: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 	// and here: https://bost.ocks.org/mike/shuffle/
 	// and here: http://sedition.com/perl/javascript-fy.html
@@ -143,7 +179,7 @@ $(document).ready(function () {
 			stop();
 			timer = 31;
 
-			console.log("Time Up!");
+			// console.log("Time Up!");
 			timeUp();
 		}
 	}
@@ -290,11 +326,11 @@ $(document).ready(function () {
 		$("#randQuestion").html(randQuestion);
 		$("#answerArea").html('');
 		addAnswerBtns();
-		console.log(questions);
-		console.log(randQuestionInd);
-		console.log(randQuestion);
-		console.log("Questions asked: " + questionsAsked);
-		console.log("The correct answer is: " + correctAnswer);
+		// console.log(questions);
+		// console.log(randQuestionInd);
+		// console.log(randQuestion);
+		// console.log("Questions asked: " + questionsAsked);
+		// console.log("The correct answer is: " + correctAnswer);
 		timer = 31;
 		questionsAsked++;
 		run();
@@ -323,7 +359,7 @@ $(document).ready(function () {
 		// console.log(randAnswers);
 		$("#startArea").append(answerArea);
 		addAnswerBtns();
-		console.log("The correct answer is: " + correctAnswer);
+		// console.log("The correct answer is: " + correctAnswer);
 		$("#startArea").on("click", ".answerBtn", guess);
 		questionsAsked++;
 		run();
@@ -346,7 +382,7 @@ $(document).ready(function () {
 		wrongs = 0;
 		unanswered = 0;
 
-		// Trying to figure out the right way to reinitialize these variables so I can get different questions each time, as well as the right question to match the answers.
+		// Need to reinitialize these variables so I can get different questions each time, as well as the right question to match the answers.
 		shuffledQuestions = shuffle(questions);
 		randQuestionInd = shuffledQuestions[questionsAsked];
 		randQuestion = randQuestionInd.question;
@@ -362,24 +398,15 @@ $(document).ready(function () {
 
 		// So I can see if randomization of questions is working
 		console.log("~*~*~*~*~*~*~*~*~*~*Reset Load~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
-		console.log(questions);
-		console.log(randQuestionInd);
-		console.log(randQuestion);
+		// console.log(questions);
+		// console.log(randQuestionInd);
+		// console.log(randQuestion);
 		// console.log("Questions asked: " + questionsAsked);
 
-		// Setting all these variables to null just breaks things.
-		// randQuestion = null;
-		// answers = null;
-		// correctAnswer = null;
-		// randAnswers = null;
-		// answerImage = null;
 
 		$("#questionArea").show();
 		$("#randQuestion").show();
 	}
-
-
-	// reset();
 
 
 });
